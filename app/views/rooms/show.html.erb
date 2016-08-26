@@ -1,0 +1,266 @@
+ <div class="panel panel-default">
+ <div class="panel-body">
+   
+   <!--Image -->
+   <div class="row">
+     <div class="col-md-12">
+       <%= image_tag @photos[0].image.url(), class: "img-responsive" if @photos.length > 0 %>
+     </div>
+   </div>
+
+   <br>
+
+   <!-- Main info -->
+   <div class="row">
+     <div class="col-md-8">
+       <div class="row">
+         <div class="col-md-3 text-centre">
+           <%= image_tag avatar_url(@room.user), class: "img-circle avatar-large" %><br><br>
+           <%= @room.user.fullname %>
+         </div>
+
+         <div class="col-md-9">
+           <h4><%= @room.listing_name %></h4>
+           <%= @room.address %>
+           <div class="row text-center row-space-1">
+             <div class="col-sm-3">
+               <i class="fa fa-home fa-2x"></i>
+
+             </div>
+             <div class="col-sm-3">
+               <i class="fa fa-users fa-2x"></i>
+               </div>
+                <div class="col-sm-3">
+               <i class="fa fa-bed fa-2x"></i>
+               </div>
+                <div class="col-sm-3">
+               <i class="fa fa-ship fa-2x"></i>
+               </div>
+              
+
+           </div>
+
+           <div class="row text-centre">
+             <div class="col-sm-3">
+               <%= @room.home_type %>
+             </div>
+             <div class="col-sm-3">
+               <%= @room.accommodate %> <%= @room.accommodate > 1? "Guests" : "Guest" %>
+             </div>
+               <div class="col-sm-3">
+               <%= @room.bed_room%> <%= @room.bed_room > 1? "Bedrooms" : "Bedroom" %>
+             </div>
+               <div class="col-sm-3">
+               <%= @room.bath_room %> <%= @room.bath_room > 1? "Bathrooms" : "Bathroom" %>
+             </div>
+           </div>
+
+
+         </div>
+       </div>
+     </div>
+     <!-- Reservation -->
+     <div class="col-md-4">
+       <%= render 'reservations/form'  %>
+     </div>
+   </div>
+
+
+   <!--About -->
+   <div class="row">
+     <div class="col-md-12">
+       <h2>About This Listing</h2>
+       <p><%= @room.summary %></p>
+     </div>
+   </div>
+
+   <!-- amintities-->
+   <div class="row">
+     <div class="col-md-2">
+       <p>Amentities</p>
+     </div>
+     <div class="col-md-10">
+       <div class="row">
+         <div class="col-md-6">
+           <ul class="amenities">
+             <li class="<%= 'text-line-through' if !@room.is_tv %>">TV</li>
+              <li class="<%= 'text-line-through' if !@room.is_kitchen %>">Kitchen</li>
+               <li class="<%= 'text-line-through' if !@room.is_internet %>">Internet</li>
+           </ul>
+         </div>
+         <div class="col-md-6">
+            <li class="<%= 'text-line-through' if !@room.is_heating %>">Heating</li>
+             <li class="<%= 'text-line-through' if !@room.is_air %>">Air Conditioning</li>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <!-- carousal-->
+   <div class="row">
+     <div class="col-md-10 col-md-offset-1">
+       
+       <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+       <% if @photos %>
+       <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <% @photos.each do |photo| %>
+          <li data-target="#myCarousel" data-slide-to="<%= photo.id %>"></li>
+          <% end %>
+         </ol>
+         <% end %>
+
+           <!-- Wrapper for slides -->
+            <div class="carousel-inner" role="listbox">
+           <% if @photos %>
+             <% @photos.each do |photo| %>
+    <div class="item <%= 'active' if photo.id == @photos[0].id %>">
+       <%= image_tag photo.image.url() %>
+       </div>
+       <% end %>
+       <% end %>
+       </div>
+
+    
+
+                <!-- Left and right controls -->
+              <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                   <span class="sr-only">Previous</span>
+               </a>
+              <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+                </a>
+                </div>
+              </div>
+    </div>
+    <br>
+    <br>
+    <hr>
+    <!-- Reviews -->
+    <div class="row">
+      <div class="col-md-12">
+      <h3>Reviews <%= @avg_review %> (<%= @reviews.count %></h3>
+      <div class="star-rating" data-score= <%= @avg_review %>></div>
+      <em> <%= "#{@reviews.length} reviews" %>  </em>
+      <div>
+        <span class="pull-right">
+          <%= link_to "Write a Review", new_room_review_path(@room) %>
+        </span>
+      </div> 
+        <div class="container">
+        
+       <div class="col-md-7 col-md-offset-1">
+       <% if @reviews.blank? %>
+        <h3>No review Just Yet, would you like to add the first</h3> 
+        <%= link_to "write Review", new_room_review_path(@room), class: "btn btn-danger" %>
+         <% else %>
+         <% @reviews.order("id desc").each do |review| %>
+
+         <hr>
+         <div class="row">
+           <div class="col-md-1">
+             <%= image_tag avatar_url(review.user), class: "img-circle avatar-medium" %>
+           </div>
+           <div class="col-md-12">
+             <div class="user name">
+               <strong><%= review.user.fullname %><div class="star-rating" data-score= <%=
+           review.rating %>></div> </strong>
+           <span class="pull-right">
+           <%= link_to "Remove My Review", [@room, review], method: :delete, data: {confirm: "Are you sure" } %></span>
+             </div>
+             <div><%= review.created_at.strftime("%v") %></div>
+           <p><%=review.comment %></p>
+           </div>
+         </div>
+          
+         </div>
+          <%  end %>
+         <%end %> 
+         </div>
+         </div>
+      </div>
+    </div>
+   <!-- google maps -->
+   <div class="row">
+     <div class="col-md-12">
+
+     <div id="map">
+       
+     </div>
+     <style>
+      #map {
+        margin-top: 60px;
+        width: 100%;
+        height: 400px;
+      }
+    </style>
+
+    <script>
+        var map;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 28.4594965, lng: 77.0266383},
+          zoom: 8,
+           mapType: google.maps.MapTypeId.ROADMAP
+        });
+
+      var marker = new google.maps.Marker({
+        position: {lat:  28.4594965, lng: 77.0266383},
+        title: "AirAlien"
+      });
+      marker.setMap(map);
+      }
+    google.maps.event.addDomListener(window, 'load', initMap);
+   
+    </script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&callback=initMap"></script>
+
+    <h3>Near by</h3>
+    <div class="row">
+     <% for room in @room.nearbys(10) %>
+     <div class="col-md-4">
+       <div class="panel-panel-default">
+         <div class="panel-heading">
+           <%= image_tag room.photos[0].image.url(:thumb) %>
+         </div>
+         <div class="panel-body">
+           <%= link_to room.listing_name, room %><br>
+           (<%= room.distance.round(2) %> miles away)
+         </div>
+       </div>
+     </div>
+     <% end %>
+    </div>
+    
+
+     
+  
+   
+       
+     </div>
+   </div>
+
+
+ </div>
+   
+ </div>
+
+
+
+
+<%= link_to 'Edit', edit_room_path(@room) %> |
+<%= link_to 'Back', rooms_path %>
+
+
+<script>
+$('.star-rating').raty({
+  path: '/assets',
+  readOnly: true,
+  score: function() {
+    return $(this).attr('data-score');
+  }
+});
+</script>

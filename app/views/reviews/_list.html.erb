@@ -1,0 +1,23 @@
+<% if @reviews.count == 0 %>
+<div class="text-centre"><h4> There is no Review yet</div>
+<% else %>
+ 
+ <% @reviews.order("id desc").each do |reviews| %>
+ <hr>
+ <div class="row">
+ 	<div class="col-md-1">
+       <%= image_tag avatar_url(review.user), class: "img-circle avatar-medium" %>
+     </div>
+         <div class="col-md-12">
+          <div>
+            <strong><%= review.user.fullname %> <%=
+           review.rating %> </strong>
+           <span class="pull-right">
+           <%= link_to "Remove My Review", [@room, review], method: :delete, data: {confirm: "Are you sure" } %></span>
+             </div>
+             <div><%= review.created_at.strftime("%v") %></div>
+           <div><%=review.comment %></div>
+           </div>
+         </div>
+         <% end %>
+         <% end %>

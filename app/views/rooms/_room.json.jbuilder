@@ -1,0 +1,2 @@
+json.extract! room, :id, :home_type, :room_type, :accommodate, :bed_room, :bath_room, :listing_name, :summary, :address, :is_tv, :is_kitchen, :is_air, :is_heating, :is_internet, :price, :active, :user_id, :created_at, :updated_at
+json.url room_url(room, format: :json)
