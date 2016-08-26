@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.6'
 
-gem 'sqlite3'
+
 
 
 
@@ -24,7 +24,7 @@ gem 'aws-sdk', '>= 2.0.34'
 
 
 group :development, :test do
-  
+  gem 'sqlite3'
   gem 'byebug'
 end
 
@@ -41,3 +41,9 @@ gem 'geocoder'
 gem 'jquery-ui-rails'
 gem 'private_pub'
 gem 'thin'
+
+
+group :production do
+	gem 'pg'
+	gem 'rails_12factor'
+end
